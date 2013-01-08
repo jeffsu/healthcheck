@@ -1,0 +1,9 @@
+{
+  "name":         "healthcheck",
+  "version":      "0.1.0",
+  "description":  "practice app",
+  "dependencies": { 
+    "mochiscript": ">=0.6.15",
+    "request":     ">=2.12.0"
+  }
+}

@@ -1,0 +1,24 @@
+#! /usr/bin/env node
+var request = require('request');
+
+var red, yellow, blue, reset;
+red   = '\033[31m';
+yellow= '\033[33m';
+blue  = '\033[34m';
+reset = '\033[0m';
+
+var url      = process.argv[2] || 'http://www.baidu.com';
+var interval = process.argv[3] || 5000;
+
+var intvId = setInterval(function(url) { 
+  request(url, function(err, response, body) {
+    console.log(url + ':' + yellow + response.statusCode + reset);
+  });
+}, interval, url);
+
+process.on('exit', function() {
+  console.log('exiting...');
+  clearInterval(intvId);
+});
+
+//process.exit(0);

@@ -1,20 +1,30 @@
 var http    = require('http');
 var request = require('request');
 
-var config = {
-  host: "http://www.baidu.com"
-}
+var checks = {
+  baidu: { interval: 10, url: "http://www.baidu.com" } 
+};
+
+var health = {};
 
 function checkhost(host, cb) {
   var host = host || config.host;
   request(host, cb);
 }
 
-http.createServer(function(req, res){
-  res.writeHead(200, {"Content-Type": "text/plain"});
-  checkhost(null, function (err, response, body) {
-    if(!err) res.end(response.statusCode.toString());
-    else res.end(err.toString());
-  });
-}).listen(3010);
+function start(name, config) {
+  function beat(err, res, body) {
+    health[name] = !err;
+    setTimeout(run, config.interval);
+  }
+  
+  function run() {
+    request(config.url, beat)
+  }
+  
+  run();
+}
 
+http.createServer(function(req, res){
+  res.writeHead(health['baidu'] ? 200 : 500, {"Content-Type": "text/plain"});
+}).listen(3010);
